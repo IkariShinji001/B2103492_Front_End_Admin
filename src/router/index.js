@@ -63,6 +63,12 @@ const router = createRouter({
         {
           path: '/staffs',
           component: () => import('../views/StaffListView.vue')
+        },{
+          path: '/orders/waiting',
+          component: () => import('../views/OrdersWaitingList.vue')
+        },{
+          path: '/orders/approved',
+          component: () => import('../views/OrdersApprovedList.vue')
         }
       ]
     },

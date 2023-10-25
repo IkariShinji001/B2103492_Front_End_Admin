@@ -80,6 +80,21 @@
             </q-item>
           </router-link>
         </div>
+
+        <div>
+          <q-separator spaced />
+          <q-item-label header class="option-header">Quản lí đơn hàng</q-item-label>
+          <router-link :to="`${option.path}`" v-for="(option, index) in oderOption" :key="index">
+            <q-item clickable v-ripple class="option">
+              <q-item-section avatar>
+                <q-icon :name="option.iconName" :class="option.class" />
+              </q-item-section>
+              <q-item-section class="option-text"> {{ option.text }} </q-item-section>
+            </q-item>
+          </router-link>
+        </div>
+
+
       </q-list>
       <q-item>
         <q-item-section>
@@ -134,6 +149,11 @@ export default {
       { iconName: 'inbox', class: 'icon', text: 'Danh sách nhân sự', path: '/staffs' }
     ]
 
+    const oderOption = [
+      { iconName: 'inbox', class: 'icon', text: 'Đơn hàng đợi duyệt', path: '/orders/waiting' },
+      { iconName: 'inbox', class: 'icon', text: 'Đơn hàng đã duyệt', path: '/orders/approved'},
+    ]
+
     const handleSignOut = async () => {
       try {
         const result = await authService.signOut()
@@ -154,7 +174,8 @@ export default {
       drawerOptionInventory,
       handleSignOut,
       drawerOptionSeries,
-      staffOption
+      staffOption,
+      oderOption
     }
   }
 }

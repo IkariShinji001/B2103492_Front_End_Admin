@@ -13,6 +13,14 @@ class StaffService{
     return (await api.post('/staffs', payload)).data;
   }
 
+  async update(id ,payload){
+    return (await api.put(`/staffs/${id}`, payload)).data;
+  }
+
+  async delete(id){
+    return (await api.delete(`/staffs/${id}`)).data;
+  }
+   
 }
 
 export default new StaffService();
