@@ -20,6 +20,15 @@ class OrderService{
     }
   }
 
+  async getRevenueStatistic(){
+    try{
+      const res = await api.get('/orders/revenue');
+      return res.data;
+    }catch (error){
+      console.log(error);
+    }
+  }
+
 }
 
 export default new OrderService();

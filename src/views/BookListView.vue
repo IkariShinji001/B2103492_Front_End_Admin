@@ -72,12 +72,8 @@
                 <router-link :to="'/books/' + book._id">
                   <q-icon title="Xem chi tiết" name="visibility" class="func-btn"></q-icon>
                 </router-link>
-
-                <router-link :to="'/books/inventory/' + book._id">
-                  <q-icon title="Nhập kho" name="add_box" class="func-btn"></q-icon>
-                </router-link>
-
                 <q-icon
+                  v-if="role === 'admin'"
                   title="Xóa"
                   name="delete"
                   class="func-btn"
@@ -85,6 +81,7 @@
                 ></q-icon>
               </div>
               <q-toggle
+                v-if="role === 'admin'"
                 @click="handleChangeIsInBussiness(book._id, book.isInBussiness)"
                 v-model="book.isInBussiness"
                 :label="book.isInBussiness ? 'Đang kinh doanh' : 'Dừng kinh doanh'"
@@ -135,8 +132,10 @@ export default {
     const isLoading = ref(false)
     const search = ref()
     const maxPage = ref()
+    const role = ref()
 
     onBeforeMount(async () => {
+      role.value = localStorage.getItem('role')
       try {
         isLoading.value = true
         books.value = await bookService.getBooks(
@@ -178,7 +177,7 @@ export default {
 
     const handleDeleteBook = async (bookId) => {
       const confirm = window.confirm('Bạn muốn xóa sách này đúng không?')
-      
+
       if (confirm) {
         const index = books.value.findIndex((book) => book._id === bookId)
         try {
@@ -205,6 +204,7 @@ export default {
       search,
       currentPage,
       maxPage,
+      role,
       handleChangeIsInBussiness,
       handleDeleteBook,
       handleUpdatePage

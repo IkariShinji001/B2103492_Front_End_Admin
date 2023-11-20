@@ -34,14 +34,14 @@
           <tr class="row">
             <th class="col-md-1">STT</th>
             <th class="col-md-3">Thể loại</th>
-            <th class="col-md-6">Thông tin chi tiết</th>
+            <th class="col-md-5">Thông tin chi tiết</th>
             <th class="function col-md-2">Chức năng</th>
           </tr>
 
           <tr class="row" v-for="(genre, i) in genres" :key="i">
             <td class="col-md-1 stt">{{ i }}</td>
             <td class="col-md-3 type">{{ genre.type }}</td>
-            <td class="col-md-6">{{ genre.description }}</td>
+            <td class="col-md-5">{{ genre.description }}</td>
             <td class="function col-md-2">
               <q-icon
                 title="Xem thông tin chi tiết"
@@ -187,7 +187,8 @@ export default {
 }
 
 table {
-  width: 100%;
+  overflow: hidden;
+  width: inherit;
   margin-top: 50px;
 }
 th {

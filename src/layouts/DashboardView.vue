@@ -84,7 +84,20 @@
         <div>
           <q-separator spaced />
           <q-item-label header class="option-header">Quản lí đơn hàng</q-item-label>
-          <router-link :to="`${option.path}`" v-for="(option, index) in oderOption" :key="index">
+          <router-link :to="`${option.path}`" v-for="(option, index) in orderOptionsToShow" :key="index">
+            <q-item clickable v-ripple class="option">
+              <q-item-section avatar>
+                <q-icon :name="option.iconName" :class="option.class" />
+              </q-item-section>
+              <q-item-section class="option-text"> {{ option.text }} </q-item-section>
+            </q-item>
+          </router-link>
+        </div>
+
+        <div  v-if="role === 'admin'" >
+          <q-separator spaced/>
+          <q-item-label header class="option-header">Thống kê doanh thu</q-item-label>
+          <router-link :to="`${option.path}`" v-for="(option, index) in StatisticOption" :key="index">
             <q-item clickable v-ripple class="option">
               <q-item-section avatar>
                 <q-icon :name="option.iconName" :class="option.class" />
@@ -109,7 +122,7 @@
 </template>
 
 <script>
-import { onBeforeMount, ref } from 'vue'
+import { onBeforeMount, ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import authService from '../services/auth.service'
 import { useToast } from 'vue-toastification'
@@ -142,17 +155,29 @@ export default {
     ]
 
     const drawerOptionInventory = [
-      { iconName: 'inbox', class: 'icon', text: 'Lịch sử nhập kho', path: '/books/inventory' }
+      {iconName: 'add_box', class: 'icon', text: 'Nhập kho', path: '/books/inventory/add'}
     ]
 
     const staffOption = [
-      { iconName: 'inbox', class: 'icon', text: 'Danh sách nhân sự', path: '/staffs' }
+      { iconName: 'list', class: 'icon', text: 'Danh sách nhân sự', path: '/staffs' }
     ]
 
     const oderOption = [
-      { iconName: 'inbox', class: 'icon', text: 'Đơn hàng đợi duyệt', path: '/orders/waiting' },
-      { iconName: 'inbox', class: 'icon', text: 'Đơn hàng đã duyệt', path: '/orders/approved'},
+      { iconName: 'list', class: 'icon', text: 'Đơn hàng đợi duyệt', path: '/orders/waiting' },
+      { iconName: 'grading', class: 'icon', text: 'Đơn hàng đã duyệt', path: '/orders/approved'},
     ]
+
+    const StatisticOption = [
+      {iconName: 'bar_chart', class: 'icon', text:'Thống kê doanh thu', path: '/revenue'}
+    ]
+
+    const orderOptionsToShow = computed(() =>{
+      if (role.value === 'admin') {
+        return oderOption;
+      } else {
+        return oderOption.filter(option => option.text === 'Đơn hàng đợi duyệt');
+      }
+    })
 
     const handleSignOut = async () => {
       try {
@@ -175,7 +200,9 @@ export default {
       handleSignOut,
       drawerOptionSeries,
       staffOption,
-      oderOption
+      oderOption,
+      StatisticOption,
+      orderOptionsToShow
     }
   }
 }

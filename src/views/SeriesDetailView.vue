@@ -121,7 +121,7 @@
           </q-card-section>
 
           <q-card-actions align="center">
-            <q-btn label="Thêm" class="btn-update-action" @click="handleUpdateSeries" />
+            <q-btn label="CẬP NHẬT" class="btn-update-action" @click="handleUpdateSeries" />
           </q-card-actions>
         </q-card>
       </q-dialog>

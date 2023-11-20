@@ -22,11 +22,5 @@ export default defineConfig({
   },
   server: {
     port: 9999,
-    // proxy: {
-    //   "/api/v1" :{
-    //     target: "http://localhost:3000/",
-    //     changeOrigin: true
-    //   }
-    // }
   }
 })

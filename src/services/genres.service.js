@@ -1,11 +1,9 @@
 import api from "./api.service";
-
 class GenresService{
   async getAllGenres(search, nameOrder){
     const genres = (await api.get('/genres/', {params: {search, order: nameOrder}})).data;
     return genres;
   }
-
 
   async deleteGenres(id){
     const result = await api.delete(`/genres/${id}`);

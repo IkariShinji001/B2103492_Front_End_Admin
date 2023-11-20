@@ -5,8 +5,8 @@
       <div class="row justify-between">
         <card-order-info
           v-if="approveOrder"
-          title="Số đơn đã được duyệt"
-          :value="approveOrderCount"
+          title="Số đơn đã bị hủy"
+          :value="cancelOrderCount"
         ></card-order-info>
 
         <card-order-info
@@ -32,23 +32,27 @@
       >
       </q-select>
 
-      <table style="width: 100%; margin-top: 30px;">
-        <tr class="header-table">
+      <table style="width: 100%; margin-top: 30px" v-if="approveOrder">
+        <tr class="header-table row">
           <th class="col-md-1">STT</th>
           <th class="col-md-3">Mã đơn hàng</th>
-          <th class="col-md-2">Giá đơn hàng</th>
+          <th class="col-md-3">Giá đơn hàng</th>
           <th class="col-md-2">Người duyệt</th>
           <th class="col-md-3">Trạng thái</th>
         </tr>
 
-        <tr v-for="(order, i) in approveOrder" :key="i">
-          <td class="col-md-1">{{ i }}</td>
-          <td class="col-md-3">{{ order._id }}</td>
-          <td class="col-md-2">{{ new Intl.NumberFormat().format(order.orderPrice) + ' đ' }}</td>
-          <td class="col-md-2">{{ order.staff.fullName }}</td>
-          <td class="col-md-3">{{ order.status }}</td>
-        </tr>
+        <div class="table-body">
+          <tr v-for="(order, i) in approveOrder" :key="i" class="row">
+            <td class="col-md-1">{{ i }}</td>
+            <td class="col-md-3">{{ order._id }}</td>
+            <td class="col-md-3">{{ new Intl.NumberFormat().format(order.orderPrice) + ' đ' }}</td>
+            <td class="col-md-2">{{ order?.staff?.fullName }}</td>
+            <td class="col-md-3">{{ order.status }}</td>
+          </tr>
+        </div>
       </table>
+
+      <div class="tb"></div>
     </section>
   </q-page>
 </template>
@@ -57,7 +61,7 @@
 import HeadTitle from '../components/HeadTitle.vue'
 import CardOrderInfo from '../components/CardOrderInfo.vue'
 import orderService from '../services/order.service'
-import { onBeforeMount, ref, watchEffect } from 'vue'
+import { computed, onBeforeMount, ref, watchEffect } from 'vue'
 export default {
   name: 'OrdersApprovedList',
   components: {
@@ -69,19 +73,24 @@ export default {
     const approveOrderCount = ref()
     const acceptedOrderCount = ref()
     const rejectOrderCount = ref()
-    const orderOptions = ref(['Chấp nhận đơn hàng', 'Từ chối đơn hàng'])
+    const orderOptions = ref(['Chấp nhận đơn hàng', 'Từ chối đơn hàng', 'Hủy đơn hàng'])
     const orderOptionValue = ref()
-    const onBeforeMountCompleted = ref(false);
+    const onBeforeMountCompleted = ref(false)
+    const cancelOrderCount = ref(0)
 
     onBeforeMount(async () => {
       try {
         approveOrder.value = await orderService.getAllOrder()
-        approveOrder.value = approveOrder.value.filter(
-          (order) => order.status === 'Chấp nhận đơn hàng' || order.status === 'Từ chối đơn hàng'
-        )
-        approveOrderCount.value = approveOrder.value.length
+
         acceptedOrderCount.value = approveOrder.value.reduce((count, order) => {
           if (order.status === 'Chấp nhận đơn hàng') {
+            return count + 1
+          }
+          return count
+        }, 0)
+
+        cancelOrderCount.value = approveOrder.value.reduce((count, order) => {
+          if (order.status === 'Hủy đơn hàng') {
             return count + 1
           }
           return count
@@ -93,27 +102,34 @@ export default {
           }
           return count
         }, 0)
-        onBeforeMountCompleted.value = true;
+        onBeforeMountCompleted.value = true
       } catch (error) {
         console.log(error)
       }
     })
 
+    const filterOrder = computed(() => {})
+
     watchEffect(async () => {
       if (onBeforeMountCompleted.value) {
-        let statusFilter = null;
+        let statusFilter = null
         if (orderOptionValue.value === 'Chấp nhận đơn hàng') {
           statusFilter = 'Chấp nhận đơn hàng'
         } else if (orderOptionValue.value === 'Từ chối đơn hàng') {
           statusFilter = 'Từ chối đơn hàng'
+        } else if (orderOptionValue.value === 'Hủy đơn hàng') {
+          statusFilter = 'Hủy đơn hàng'
+        } else {
+          statusFilter = {}
         }
-        approveOrder.value = await orderService.getAllOrder(statusFilter);
+        approveOrder.value = await orderService.getAllOrder(statusFilter)
 
-        console.log(approveOrder.value);
+        console.log(approveOrder.value)
       }
     })
 
     return {
+      cancelOrderCount,
       approveOrderCount,
       approveOrder,
       acceptedOrderCount,
@@ -125,7 +141,7 @@ export default {
 }
 </script>
 
-<style scoped> 
+<style scoped>
 .wrapper {
   width: 90%;
   margin: 0 auto;
@@ -136,12 +152,11 @@ export default {
   font-size: 20px;
 }
 
-table{
+table {
   border-collapse: collapse;
 }
 
-
-.header-table{
+.header-table {
   display: fixed;
 }
 
@@ -158,4 +173,13 @@ td {
   font-size: 18px;
 }
 
+.table-body {
+  width: 100%;
+  height: 500px;
+  overflow: scroll;
+}
+
+.tb{
+  padding-bottom: 10  0px;
+}
 </style>

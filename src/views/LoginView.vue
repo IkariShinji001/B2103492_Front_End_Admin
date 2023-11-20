@@ -47,6 +47,7 @@ export default {
     const login = async () =>{
       try{
         const res = await StaffService.login(staffID, password);
+        console.log(res);
         localStorage.setItem('role', res.role);
         Toast.success('Đăng nhập thành công');
         router.push('/');

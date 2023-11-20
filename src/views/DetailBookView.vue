@@ -178,7 +178,7 @@
         <section>
           <im />
         </section>
-        <image-preview :images="images"></image-preview>
+        <image-preview :images="reverseImage"></image-preview>
       </section>
 
       <div class="row btn-container">
@@ -195,7 +195,7 @@
 
 
 <script>
-import { onBeforeMount, ref } from 'vue';
+import { onBeforeMount, ref, computed } from 'vue';
 import { useRoute } from 'vue-router';
 import bookService from '../services/book.service'
 import genresService from '../services/genres.service';
@@ -310,6 +310,10 @@ export default{
       
     }
 
+    const reverseImage = computed(() =>{
+      return images.value.reverse();
+    })
+
     const handleUpdateImages = async () =>{
       const {id} = route.params;
 
@@ -355,7 +359,8 @@ export default{
       seriesOptions,
       handleDeleteImage,
       handleUpdate,
-      handleUpdateImages
+      handleUpdateImages,
+      reverseImage
     }
   }
 }

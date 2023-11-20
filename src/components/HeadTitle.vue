@@ -22,6 +22,12 @@ export default{
     const height = ref(props.height);
     const fontSize = ref(props.fontSize);
 
+    return {
+      width,
+      text,
+      height,
+      fontSize
+    }
   }
 
 }

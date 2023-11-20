@@ -1,12 +1,17 @@
 <template>
   <q-page>
-    <head-title text="Trang Chủ" width="fix-content" fontSize="2em" class="lt-sm-hidden"></head-title>
+    <head-title
+      text="Trang Chủ"
+      width="fix-content"
+      fontSize="2em"
+      class="lt-sm-hidden"
+    ></head-title>
     <section class="row">
-      <div class="col-sm-4 col-xs-12" v-for="(card, i) in cardInfor">
+      <div class="col-sm-6 col-xs-12" v-for="(card, i) in cardInfor">
         <card-infor
           :key="i"
           :title="card.title"
-          :text="card.text"
+          :text="totalWaitingOrder"
           :height="card.height"
           :background-color="card.backgroundColor"
           :margin="card.margin"
@@ -14,14 +19,21 @@
         >
         </card-infor>
       </div>
+      <div class="col-md-6"><h2 style="text-align: center;">Thế giới tiểu thuyết</h2></div>
     </section>
+
+    <div class="banner-container row justify-around">
+      <div class="col-md-6"><h2 style="text-align: center;">Các banner mới</h2></div>
+      <img src="../assets/banner.jpg" class="banner" />
+    </div>
   </q-page>
 </template>
 
 <script>
 import HeadTitle from '../components/HeadTitle.vue'
 import Card from '../components/Card.vue'
-import { ref } from 'vue'
+import orderSeries from '../services/order.service'
+import { onBeforeMount, ref } from 'vue'
 export default {
   name: 'HomeView',
   components: {
@@ -29,6 +41,10 @@ export default {
     'card-infor': Card
   },
   setup() {
+    const totalWaitingOrder = ref(0)
+    onBeforeMount(async () => {
+      totalWaitingOrder.value = (await orderSeries.getAllOrder('Chờ xác nhận')).length
+    })
     const cardInfor = ref([
       {
         title: 'Số đơn đang đợi duyệt',
@@ -38,32 +54,21 @@ export default {
         backgroundColor: '#42a5f5!important',
         margin: '10px 20px',
         unit: 'đơn hàng'
-      },
-      {
-        title: 'Số đơn đang vận chuyển',
-        value: null,
-        width: '90%',
-        height: '20vh',
-        backgroundColor: '#1976d2!important',
-        margin: '10px 20px',
-        unit: 'đơn hàng'
-      },
-      {
-        title: 'Doanh thu tháng này',
-        value: null,
-        width: '90%',
-        height: '20vh',
-        backgroundColor: '#0d47a1!important',
-        margin: '10px 20px',
-        unit: 'đ'
       }
     ])
 
     return {
-      cardInfor
+      cardInfor,
+      totalWaitingOrder
     }
   }
 }
 </script>
 
-<style scoped></style>
+<style scoped>
+.banner-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+</style>

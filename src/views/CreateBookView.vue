@@ -163,7 +163,7 @@
             <q-icon name="cloud_upload" />
           </template>
         </q-file>
-        <image-preview :images="images"></image-preview>
+        <image-preview :images="reverseImage"></image-preview>
       </section>
       <div class="row btn-container">
         <q-btn
@@ -178,7 +178,7 @@
 </template>
 
 <script>
-import { onBeforeMount, ref } from 'vue'
+import { computed, onBeforeMount, ref } from 'vue'
 import HeadTitle from '../components/HeadTitle.vue'
 import ImagePreview from '../components/ImagePreview.vue'
 import genresService from '../services/genres.service'
@@ -240,6 +240,9 @@ export default {
 
     const rules = (val) => (val !== null && val !== '') || 'Không được để trống'
 
+    const reverseImage = computed(() =>{
+      return images.value.reverse();
+    })
     const onSubmit = async () => {
       const bookInfo = {
         name: name.value,
@@ -303,7 +306,8 @@ export default {
       images,
       summarize,
       author,
-      seriesOptions
+      seriesOptions,
+      reverseImage
     }
   }
 }

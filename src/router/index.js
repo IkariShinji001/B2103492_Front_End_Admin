@@ -37,8 +37,8 @@ const router = createRouter({
           component: () => import('../views/InventoryHistoryView.vue')
         },
         {
-          path: '/books/inventory/:id',
-          component: () => import('../views/AddInventoryView.vue')
+          path: '/books/inventory/add',
+          component: () => import('../views/addInventory.vue')
         },
         {
           path: '/books/genres/create',
@@ -69,6 +69,9 @@ const router = createRouter({
         },{
           path: '/orders/approved',
           component: () => import('../views/OrdersApprovedList.vue')
+        },{
+          path: '/revenue',
+          component: () => import('../views/RevenueStatistic.vue')
         }
       ]
     },
